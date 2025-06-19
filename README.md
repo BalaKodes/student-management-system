@@ -20,7 +20,3 @@ A Spring Boot-based web application to manage students, built for learning, CRUD
 - 🔁 RESTful API design (Controller → Service → Repository)
 - 📦 Clean Maven-based project structure
 
----
-
-## 📂 Project Structure
-
