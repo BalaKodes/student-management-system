@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Management System</title>
+</head>
+<body>
+  <h2 style="text-align: center; background-color: cyan;">Student Management System</h2>
+
+  <center>
+    <fieldset style="width: 500px;">
+      <legend><b>UPDATE DATA</b></legend>
+      <form id="studentForm">
+        <table>
+          <tr><td>Roll No:</td><td><input type="text" id="studentId" placeholder="Auto-generated or search" /></td></tr>
+          <tr><td>Name:</td><td><input type="text" id="name" /></td></tr>
+          <tr><td>Degree:</td><td><input type="text" id="grade" /></td></tr>
+          <tr><td>DOB:</td><td><input type="date" id="dob" /></td></tr>
+          <tr><td>Gender:</td><td>
+            <select id="gender">
+              <option value="">--Select--</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </td></tr>
+          <tr><td>Contact:</td><td><input type="text" id="contact" /></td></tr>
+          <tr><td>Email:</td><td><input type="email" id="email" /></td></tr>
+          <tr>
+            <td colspan="2" align="center">
+              <button type="button" onclick="addStudent()">Add</button>
+              <button type="button" onclick="updateStudent()">Update</button>
+              <button type="button" onclick="deleteStudent()">Delete</button>
+              <button type="reset">Reset</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+      <br>
+      <input type="text" id="searchId" placeholder="Enter Roll No to Search" />
+      <button onclick="searchById()">Search by ID</button>
+    </fieldset>
+  </center>
+
+  <br><br>
+  <center>
+    <h3>All Student Records</h3>
+    <table border="1" cellpadding="8" id="studentTable">
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Name</th>
+          <th>Degree</th>
+          <th>DOB</th>
+          <th>Gender</th>
+          <th>Contact</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody id="studentTableBody"></tbody>
+    </table>
+  </center>
+
+  <script>
+    const API = "/api/students";
+
+    function clearForm() {
+      document.getElementById("studentForm").reset();
+      document.getElementById("studentId").value = '';
+    }
+
+	async function loadStudents() {
+	  const res = await fetch(`${API}`);  // ✅ fixed
+	  const data = await res.json();
+	  const table = document.getElementById("studentTableBody");
+	  table.innerHTML = "";
+
+	  data.forEach(s => {
+	    const row = `
+	      <tr>
+	        <td>${s.studentId}</td>
+	        <td>${s.name}</td>
+	        <td>${s.grade}</td>
+	        <td>${s.dob}</td>
+	        <td>${s.gender}</td>
+	        <td>${s.contact}</td>
+	        <td>${s.email}</td>
+	      </tr>`;
+	    table.innerHTML += row;
+	  });
+	}
+
+    async function addStudent() {
+      const student = {
+        name: getValue('name'),
+        grade: getValue('grade'),
+        dob: getValue('dob'),
+        gender: getValue('gender'),
+        contact: getValue('contact'),
+        email: getValue('email'),
+      };
+
+      const res = await fetch(`${API}`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(student)
+      });
+
+      if (res.ok) {
+        alert("Student added");
+        clearForm();
+        loadStudents();
+      } else alert("Error adding student");
+    }
+
+    async function updateStudent() {
+      const id = getValue('studentId');
+      if (!id) return alert("Enter Roll No to update");
+
+      const student = {
+        studentId: id,
+        name: getValue('name'),
+        grade: getValue('grade'),
+        dob: getValue('dob'),
+        gender: getValue('gender'),
+        contact: getValue('contact'),
+        email: getValue('email'),
+      };
+
+      const res = await fetch(`${API}/${id}`, {
+        method: "PUT",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(student)
+      });
+
+      if (res.ok) {
+        alert("Student updated");
+        clearForm();
+        loadStudents();
+      } else alert("Error updating");
+    }
+
+    async function deleteStudent() {
+      const id = getValue('studentId');
+      if (!id) return alert("Enter Roll No to delete");
+
+      const res = await fetch(`${API}/${id}`, { method: "DELETE" });
+
+      if (res.ok) {
+        alert("Deleted");
+        clearForm();
+        loadStudents();
+      } else alert("Error deleting");
+    }
+
+    async function searchById() {
+      const id = getValue("searchId");
+      const res = await fetch(`${API}/${id}`);
+      if (!res.ok) return alert("Student not found");
+
+      const s = await res.json();
+      setValue('studentId', s.studentId);
+      setValue('name', s.name);
+      setValue('grade', s.grade);
+      setValue('dob', s.dob);
+      setValue('gender', s.gender);
+      setValue('contact', s.contact);
+      setValue('email', s.email);
+    }
+
+    function getValue(id) {
+      return document.getElementById(id).value;
+    }
+
+    function setValue(id, value) {
+      document.getElementById(id).value = value;
+    }
+
+    window.onload = loadStudents;
+  </script>
+</body>
+</html>

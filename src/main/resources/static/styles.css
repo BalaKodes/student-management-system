@@ -1,0 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f4f4f4;
+}
+
+h1 {
+  text-align: center;
+}
+
+form, table {
+  margin: auto;
+  padding: 10px;
+}
+
+input, button {
+  margin: 5px;
+  padding: 5px;
+}
