@@ -6,12 +6,11 @@ A Spring Boot-based web application to manage students, built for learning, CRUD
 
 ## 🛠 Tech Stack
 
-- Java 17
-- Spring Boot
-- Maven
-- MySQL Database
-- Git & GitHub
-
+- Java, Spring Boot, Maven
+- MySQL
+- HTML, CSS, JavaScript
+- REST APIs
+  
 ---
 
 ## 🚀 Features
